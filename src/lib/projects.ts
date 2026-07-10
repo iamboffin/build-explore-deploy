@@ -272,4 +272,4 @@ export const PUBLICATIONS: Publication[] = [
     detail: "Filed via Khurana & Khurana. Co-inventor.",
     projectSlug: "lotus",
   },
-] as const;
+];
