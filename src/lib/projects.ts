@@ -212,7 +212,17 @@ export const PROJECTS: Project[] = [
   },
 ];
 
-export const PUBLICATIONS = [
+export type Publication = {
+  kind: string;
+  title: string;
+  venue: string;
+  status: "Published" | "Unpublished" | "Filed" | "Under examination";
+  detail: string;
+  href?: string;
+  projectSlug: string;
+};
+
+export const PUBLICATIONS: Publication[] = [
   {
     kind: "IEEE Paper",
     title: "Gesture-Controlled Wheelchair using ESP-NOW",
