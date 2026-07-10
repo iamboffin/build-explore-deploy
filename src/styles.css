@@ -6,15 +6,16 @@
 
 /*
  * Dharani Barathi — Portfolio design system
- * Aesthetic: "Engineering Journal" — deep near-black canvas, warm copper
- * accent (solder / PCB pad tone), editorial serif display, technical mono
- * annotations. No purple gradients, no generic AI look.
+ * Aesthetic: quiet Apple-like precision. Generous whitespace, near-black
+ * SF-adjacent typography on soft white, single restrained blue accent.
+ * Light is the default; dark mirrors it as true near-black with the same
+ * clarity of hierarchy.
  */
 
 @theme inline {
-  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
-  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-display: "Inter", ui-sans-serif, system-ui, -apple-system, "SF Pro Display", sans-serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, -apple-system, "SF Pro Text", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono", monospace;
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -38,9 +39,8 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
-  --color-copper: var(--copper);
-  --color-copper-glow: var(--copper-glow);
-  --color-signal: var(--signal);
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
@@ -48,64 +48,104 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  --shadow-copper: 0 20px 60px -20px color-mix(in oklab, var(--copper) 45%, transparent);
-  --shadow-panel: 0 1px 0 0 color-mix(in oklab, var(--foreground) 6%, transparent) inset,
-                  0 30px 60px -30px oklch(0 0 0 / 0.6);
+  --shadow-soft: 0 1px 2px oklch(0 0 0 / 0.04), 0 8px 24px -12px oklch(0 0 0 / 0.08);
+  --shadow-lift: 0 2px 4px oklch(0 0 0 / 0.04), 0 24px 48px -20px oklch(0 0 0 / 0.12);
 }
 
+/* Light — the default (Apple-like) */
 :root {
-  --radius: 0.5rem;
+  --radius: 0.75rem;
 
-  --background: oklch(0.16 0.008 60);
-  --foreground: oklch(0.95 0.012 80);
+  --background: oklch(1 0 0);                    /* #ffffff */
+  --foreground: oklch(0.21 0.008 264);           /* #1d1d1f */
 
-  --surface: oklch(0.19 0.01 60);
-  --surface-2: oklch(0.22 0.012 60);
+  --surface: oklch(0.977 0.002 264);             /* #f5f5f7 */
+  --surface-2: oklch(0.962 0.003 264);           /* #efeff2 */
 
-  --card: oklch(0.19 0.01 60);
-  --card-foreground: oklch(0.95 0.012 80);
-  --popover: oklch(0.19 0.01 60);
-  --popover-foreground: oklch(0.95 0.012 80);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.21 0.008 264);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.21 0.008 264);
 
-  --primary: oklch(0.72 0.16 55);          /* copper */
-  --primary-foreground: oklch(0.16 0.008 60);
-  --copper: oklch(0.72 0.16 55);
-  --copper-glow: oklch(0.82 0.15 65);
-  --signal: oklch(0.78 0.15 175);          /* teal signal accent */
+  --brand: oklch(0.59 0.19 258);                 /* #0071e3 Apple blue */
+  --brand-foreground: oklch(1 0 0);
+  --primary: var(--brand);
+  --primary-foreground: var(--brand-foreground);
 
-  --secondary: oklch(0.24 0.012 60);
-  --secondary-foreground: oklch(0.95 0.012 80);
-  --muted: oklch(0.22 0.01 60);
-  --muted-foreground: oklch(0.68 0.015 70);
-  --accent: oklch(0.72 0.16 55);
-  --accent-foreground: oklch(0.16 0.008 60);
+  --secondary: oklch(0.962 0.003 264);
+  --secondary-foreground: oklch(0.21 0.008 264);
+  --muted: oklch(0.962 0.003 264);
+  --muted-foreground: oklch(0.44 0.008 264);     /* #6e6e73 */
+  --accent: oklch(0.962 0.003 264);
+  --accent-foreground: oklch(0.21 0.008 264);
 
-  --destructive: oklch(0.62 0.22 25);
-  --destructive-foreground: oklch(0.98 0 0);
+  --destructive: oklch(0.58 0.22 27);
+  --destructive-foreground: oklch(1 0 0);
 
-  --border: oklch(0.28 0.012 60);
-  --border-strong: oklch(0.4 0.02 60);
-  --input: oklch(0.28 0.012 60);
-  --ring: oklch(0.72 0.16 55);
+  --border: oklch(0.91 0.003 264);               /* #d2d2d7 */
+  --border-strong: oklch(0.82 0.005 264);
+  --input: oklch(0.91 0.003 264);
+  --ring: oklch(0.59 0.19 258);
 
-  --chart-1: oklch(0.72 0.16 55);
-  --chart-2: oklch(0.78 0.15 175);
-  --chart-3: oklch(0.6 0.15 30);
-  --chart-4: oklch(0.85 0.12 90);
-  --chart-5: oklch(0.55 0.15 250);
+  --chart-1: oklch(0.59 0.19 258);
+  --chart-2: oklch(0.72 0.16 55);
+  --chart-3: oklch(0.65 0.18 155);
+  --chart-4: oklch(0.7 0.16 30);
+  --chart-5: oklch(0.55 0.15 300);
 
-  --sidebar: oklch(0.16 0.008 60);
-  --sidebar-foreground: oklch(0.95 0.012 80);
-  --sidebar-primary: oklch(0.72 0.16 55);
-  --sidebar-primary-foreground: oklch(0.16 0.008 60);
-  --sidebar-accent: oklch(0.22 0.01 60);
-  --sidebar-accent-foreground: oklch(0.95 0.012 80);
-  --sidebar-border: oklch(0.28 0.012 60);
-  --sidebar-ring: oklch(0.72 0.16 55);
+  --sidebar: oklch(0.977 0.002 264);
+  --sidebar-foreground: oklch(0.21 0.008 264);
+  --sidebar-primary: oklch(0.59 0.19 258);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.94 0.003 264);
+  --sidebar-accent-foreground: oklch(0.21 0.008 264);
+  --sidebar-border: oklch(0.91 0.003 264);
+  --sidebar-ring: oklch(0.59 0.19 258);
 }
 
+/* Dark — near-black, same clarity, same accent */
 .dark {
   color-scheme: dark;
+
+  --background: oklch(0.14 0.005 264);           /* ~#0a0a0c */
+  --foreground: oklch(0.97 0.002 264);           /* ~#f5f5f7 */
+
+  --surface: oklch(0.18 0.006 264);              /* ~#131316 */
+  --surface-2: oklch(0.22 0.006 264);            /* ~#1c1c20 */
+
+  --card: oklch(0.18 0.006 264);
+  --card-foreground: oklch(0.97 0.002 264);
+  --popover: oklch(0.18 0.006 264);
+  --popover-foreground: oklch(0.97 0.002 264);
+
+  --brand: oklch(0.68 0.17 254);                 /* brighter Apple blue for dark */
+  --brand-foreground: oklch(0.14 0.005 264);
+  --primary: var(--brand);
+  --primary-foreground: oklch(1 0 0);
+
+  --secondary: oklch(0.24 0.006 264);
+  --secondary-foreground: oklch(0.97 0.002 264);
+  --muted: oklch(0.22 0.006 264);
+  --muted-foreground: oklch(0.7 0.008 264);      /* ~#a1a1a6 */
+  --accent: oklch(0.24 0.006 264);
+  --accent-foreground: oklch(0.97 0.002 264);
+
+  --destructive: oklch(0.65 0.22 27);
+  --destructive-foreground: oklch(0.14 0.005 264);
+
+  --border: oklch(0.28 0.006 264);
+  --border-strong: oklch(0.4 0.008 264);
+  --input: oklch(0.28 0.006 264);
+  --ring: oklch(0.68 0.17 254);
+
+  --sidebar: oklch(0.14 0.005 264);
+  --sidebar-foreground: oklch(0.97 0.002 264);
+  --sidebar-primary: oklch(0.68 0.17 254);
+  --sidebar-primary-foreground: oklch(0.14 0.005 264);
+  --sidebar-accent: oklch(0.22 0.006 264);
+  --sidebar-accent-foreground: oklch(0.97 0.002 264);
+  --sidebar-border: oklch(0.28 0.006 264);
+  --sidebar-ring: oklch(0.68 0.17 254);
 }
 
 @layer base {
@@ -115,55 +155,50 @@
 
   html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-body);
-    font-feature-settings: "ss01", "cv11";
+    font-feature-settings: "cv11", "ss01";
     -webkit-font-smoothing: antialiased;
-    background-image:
-      radial-gradient(1200px 600px at 85% -10%, color-mix(in oklab, var(--copper) 12%, transparent), transparent 60%),
-      radial-gradient(900px 500px at -10% 20%, color-mix(in oklab, var(--signal) 8%, transparent), transparent 60%);
-    background-attachment: fixed;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.011em;
   }
 
   ::selection {
-    background: color-mix(in oklab, var(--copper) 40%, transparent);
+    background: color-mix(in oklab, var(--brand) 25%, transparent);
     color: var(--foreground);
   }
 }
 
 @utility font-display {
   font-family: var(--font-display);
-  font-optical-sizing: auto;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.032em;
+  font-weight: 600;
 }
 @utility font-mono-tech {
   font-family: var(--font-mono);
   letter-spacing: 0;
 }
 
-@utility grid-bg {
-  background-image:
-    linear-gradient(to right, color-mix(in oklab, var(--foreground) 5%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in oklab, var(--foreground) 5%, transparent) 1px, transparent 1px);
-  background-size: 48px 48px;
-}
-
-@utility hairline {
-  border-top: 1px solid var(--border);
-}
-
-@utility copper-text {
-  color: var(--copper);
-}
-
 @utility spec-label {
   font-family: var(--font-mono);
   font-size: 0.68rem;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--muted-foreground);
+}
+
+@utility brand-text {
+  color: var(--brand);
+}
+
+@utility hairline-grid {
+  background-image:
+    linear-gradient(to right, color-mix(in oklab, var(--foreground) 4%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, var(--foreground) 4%, transparent) 1px, transparent 1px);
+  background-size: 56px 56px;
 }
