@@ -1,17 +1,20 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import {
+  ArrowRight,
   ArrowUpRight,
+  Download,
   Mail,
   Phone,
-  Cpu,
+  Rocket,
   Zap,
   Radio,
-  Ruler,
-  Rocket,
-  Accessibility,
+  CheckCircle2,
+  Loader2,
 } from "lucide-react";
+import { PROJECTS, PUBLICATIONS } from "@/lib/projects";
+import { SiteHeader, SiteFooter } from "@/components/site-chrome";
 
 const Linkedin = (props: React.SVGProps<SVGSVGElement>) => (
   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden {...props}>
@@ -23,6 +26,8 @@ const Github = (props: React.SVGProps<SVGSVGElement>) => (
     <path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.36-3.88-1.36-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.71.08-.71 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.19 1.18a11 11 0 0 1 5.8 0c2.22-1.49 3.19-1.18 3.19-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.43-2.7 5.4-5.27 5.69.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z" />
   </svg>
 );
+
+const RESUME_URL = "/Dharani-Barathi-CD-Resume.pdf";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -38,200 +43,53 @@ export const Route = createFileRoute("/")({
   component: Portfolio,
 });
 
-/* ---------- Data ---------- */
-
-const PROJECTS = [
-  {
-    id: "converters",
-    tag: "Power Electronics · Research",
-    year: "2025 – 2026",
-    title: "High-Gain DC-DC Converters",
-    subtitle: "Two topologies, two Indian patents.",
-    icon: Zap,
-    blurb:
-      "Under Dr. Prabhakar M we picked research over a written assignment. Skimmed the literature around DC microgrid converters, drafted five novel topologies, and carried two forward — full design, magnetics, PCB, hardware validation.",
-    specs: [
-      ["Topology A", "Cascaded L-C-D, single switch"],
-      ["Gain A", "30 V → 400 V @ D ≈ 0.52"],
-      ["Topology B", "Synchronized dual-switch, cubic gain"],
-      ["Gain B", "24 V → 400 V @ D ≈ 0.61, 93% eff."],
-      ["Stack", "Simulink · PSIM · Altium · hand-wound ETD44/54/59"],
-    ],
-    links: [
-      {
-        label: "Patent 1 · 202641032862",
-        note: "Cascaded energy-transfer path",
-      },
-      {
-        label: "Patent 2 · 202641037148",
-        note: "Synchronized dual-switch",
-      },
-    ],
-    footer:
-      "With Chada Sai Sravan, Balaji S, under Dr. M. Prabhakar. Two-year arc from research-gap hunt to bench-validated hardware.",
-  },
-  {
-    id: "lotus",
-    tag: "Instrumentation · Invention",
-    year: "2025",
-    title: "LOTUS",
-    subtitle: "A new class of low-cost dimensional measurement device.",
-    icon: Ruler,
-    blurb:
-      "Dual VL53L0X time-of-flight sensors on a servo-driven rotating baseline, aligned by a 650 nm laser. Three geometric cases resolved via Law of Cosines depending on gear angle. The patent's novelty sits in a slip-ring-free concentric-ring power/signal path — the ToF triangulation is the first application on top.",
-    specs: [
-      ["Reliable envelope", "20 – 40 cm  ·  ± 40°"],
-      ["Accuracy (MAE)", "≈ 0.79 cm in envelope"],
-      ["BOM", "< ₹1,000 vs. ₹3k – ₹28k commercial"],
-      ["TRL", "4 · Patent filed via Khurana & Khurana"],
-    ],
-    links: [
-      { label: "IEEE draft — written", note: "not yet submitted" },
-      { label: "Indian patent — under examination", note: "" },
-    ],
-    footer:
-      "First author on the paper draft. Co-inventors: Balaji S, Chada Sai Sravan, Haseeb Ahsan N and two faculty.",
-  },
-  {
-    id: "ignition",
-    tag: "Rocket Avionics · Team Ignition",
-    year: "2024 – 2026",
-    title: "Rocket EPS + Flight Computer",
-    subtitle: "First full-SMD boards. Three PCBs. Team of two.",
-    icon: Rocket,
-    blurb:
-      "Sai and I designed the EPS and FC together — three boards total. Sai owned the avionics FC PCB; I owned the payload's 8.5 × 8.5 cm combined EPS + FC board, drawn in Altium in a single all-nighter. First time on Altium, first time on SMD.",
-    specs: [
-      ["Rails", "3.3 V (AMS1117) · 5 V (TPS54528) · 7.2 V (XL4005)"],
-      ["Packs", "3S Li-ion (avionics) · 2S Li-ion (payload)"],
-      ["Payload PCB", "8.5 × 8.5 cm, 2-layer, mixed EPS + FC"],
-      ["Debug arc", "Datasheet misread on 7.2 V rail → traced in 2 days"],
-    ],
-    links: [
-      { label: "Team Ignition · VIT Chennai", note: "Payload + Avionics sub-teams" },
-    ],
-    footer:
-      "Field-swappable buck module bolted over the dead rail. Original NRF/ESP32 co-location bug resolved with a proper power module and decoupling.",
-  },
-  {
-    id: "wheelchair",
-    tag: "Embedded · IEEE Published",
-    year: "2024",
-    title: "Gesture-Controlled Wheelchair",
-    subtitle: "ESP-NOW, MPU6050, and a Kalman filter that behaves.",
-    icon: Accessibility,
-    blurb:
-      "Curiosity project on ESP-NOW turned into a published paper. Two ESP32s, one MPU6050 on the user (hand tilt or head pose), L298N to the motors, HC-SR04 for obstacle backoff. Kalman filter to keep the IMU honest.",
-    specs: [
-      ["Response", "50 – 100 ms end-to-end"],
-      ["BOM", "< $40 vs. $200+ camera-based alternatives"],
-      ["Modes", "Hand-tilt · head pitch/roll/yaw"],
-    ],
-    links: [
-      {
-        label: "IEEE ICICNIS 2024 · DOI 10.1109/ICICNIS64247.2024.10823349",
-        note: "First author (updated post-publication)",
-      },
-    ],
-    footer:
-      "With Jayasuriya S, Balaji S, under Prof. Sriramalakshmi P.",
-  },
-  {
-    id: "pocketalt",
-    tag: "Embedded System Design",
-    year: "2026",
-    title: "Pocket Alt",
-    subtitle: "A pocket, toss-and-play altimeter for model rocketry.",
-    icon: Cpu,
-    blurb:
-      "STM32F401 + BMP280 + SSD1306, with on-chip Flash logging and a single-button 5-state FSM (calibrate → track → apogee → save → clear). Benchmarked against StratoLoggerCF, AltimeterTwo and Raven4 — none of which ship to India.",
-    specs: [
-      ["Sample rate", "10 Hz"],
-      ["Apogee latency", "< 100 ms"],
-      ["Accuracy (MAE)", "0.176 m across 5-floor elevator test"],
-      ["Battery life", "~ 5.5 hr"],
-      ["BOM", "< ₹800"],
-    ],
-    links: [{ label: "IEEE draft — written", note: "not yet submitted" }],
-    footer: "With Chada Sai Sravan and Aryaman Agrawal.",
-  },
-] as const;
-
-const SKILLS = [
-  ["Power Electronics", "DC-DC boost & high-gain topologies · volt-second analysis · magnetic design (ETD44/54/59) · 50 kHz switching · high-voltage layout · thermal debugging"],
-  ["Simulation", "MATLAB / Simulink · PSIM"],
-  ["PCB & Hardware", "Altium Designer · EasyEDA · KiCad · SMD rework · Altium library authoring"],
-  ["Instruments", "MDO / DSO · differential & current probes · multimeter"],
-  ["Microcontrollers", "STM32 · ESP32 · RP2040 (PWM · ADC · UART · SPI · I²C)"],
-  ["Protocols", "ESP-NOW · NRF24L01 · I²C sensor stacks"],
-];
-
-/* ---------- Component ---------- */
-
 function Portfolio() {
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <Nav />
+      <SiteHeader />
       <Hero />
       <About />
       <ProjectsSection />
+      <PublicationsSection />
       <Experience />
       <SkillsSection />
       <Contact />
-      <Footer />
+      <SiteFooter />
     </div>
   );
 }
 
-function Nav() {
-  return (
-    <header className="sticky top-0 z-40 backdrop-blur-md bg-background/70 border-b border-border">
-      <div className="mx-auto max-w-6xl px-6 h-14 flex items-center justify-between">
-        <a href="#top" className="flex items-center gap-2 font-mono-tech text-xs">
-          <span className="inline-block h-2 w-2 rounded-full bg-copper shadow-[0_0_12px_var(--copper-glow)]" />
-          <span className="tracking-widest uppercase">DBCD / portfolio</span>
-        </a>
-        <nav className="hidden md:flex items-center gap-7 text-xs font-mono-tech uppercase tracking-widest text-muted-foreground">
-          <a href="#work" className="hover:text-foreground transition">Work</a>
-          <a href="#experience" className="hover:text-foreground transition">Experience</a>
-          <a href="#skills" className="hover:text-foreground transition">Skills</a>
-          <a href="#contact" className="hover:text-foreground transition">Contact</a>
-        </nav>
-      </div>
-    </header>
-  );
-}
+/* ---------- Hero ---------- */
 
 function Hero() {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], [0, 120]);
+  const y = useTransform(scrollYProgress, [0, 1], [0, 80]);
 
   return (
     <section id="top" ref={ref} className="relative overflow-hidden">
-      <div className="absolute inset-0 grid-bg opacity-40 pointer-events-none" />
       <motion.div
         style={{ y }}
         aria-hidden
-        className="absolute -right-40 top-20 h-[520px] w-[520px] rounded-full blur-3xl opacity-30"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[600px] opacity-60"
       >
-        <div className="h-full w-full rounded-full bg-[radial-gradient(circle_at_center,var(--copper),transparent_60%)]" />
+        <div className="mx-auto h-full max-w-6xl hairline-grid opacity-40" />
       </motion.div>
 
-      <div className="relative mx-auto max-w-6xl px-6 pt-20 pb-28 md:pt-32 md:pb-40">
+      <div className="relative mx-auto max-w-6xl px-6 pb-24 pt-16 md:pb-36 md:pt-28">
         <motion.p
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.5 }}
           className="spec-label"
         >
-          Chennai · India — Electrical & Electronics Engineering, VIT Chennai (2023 – 2027)
+          Chennai · India — EEE @ VIT Chennai · 2023 – 2027
         </motion.p>
 
         <motion.h1
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.05 }}
+          transition={{ duration: 0.7, delay: 0.05 }}
           className="font-display mt-6 text-5xl leading-[1.02] md:text-7xl lg:text-8xl"
         >
           Dharani Barathi
@@ -241,31 +99,43 @@ function Hero() {
         <motion.p
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.15 }}
-          className="mt-8 max-w-2xl text-lg md:text-xl text-muted-foreground leading-relaxed"
+          transition={{ duration: 0.7, delay: 0.15 }}
+          className="mt-8 max-w-2xl text-lg md:text-2xl text-muted-foreground leading-relaxed"
         >
-          I design <span className="text-foreground">power electronics</span>, <span className="text-foreground">rocket avionics</span>, and the occasional <span className="text-foreground">new class of measurement instrument</span>. Two Indian patents, one IEEE paper, and a stack of PCBs that mostly work on the first power-up.
+          I design <span className="text-foreground">power electronics</span>,{" "}
+          <span className="text-foreground">rocket avionics</span>, and the occasional{" "}
+          <span className="text-foreground">new class of measurement instrument</span>. Two Indian
+          patents, one IEEE paper, and a stack of PCBs that mostly work on the first power-up.
         </motion.p>
 
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.25 }}
+          transition={{ duration: 0.7, delay: 0.25 }}
           className="mt-10 flex flex-wrap gap-3"
         >
-          <a
-            href="#work"
-            className="group inline-flex items-center gap-2 rounded-full bg-copper px-5 py-3 text-sm font-medium text-primary-foreground shadow-[var(--shadow-copper)] hover:brightness-110 transition"
+          <Link
+            to="/"
+            hash="work"
+            className="group inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground hover:opacity-90 transition"
           >
             Selected work
-            <ArrowUpRight className="h-4 w-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </a>
+            <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
+          </Link>
           <a
-            href="#contact"
-            className="inline-flex items-center gap-2 rounded-full border border-border-strong px-5 py-3 text-sm font-medium hover:bg-surface transition"
+            href={RESUME_URL}
+            download
+            className="inline-flex items-center gap-2 rounded-full border border-border-strong bg-background px-5 py-3 text-sm font-medium hover:bg-surface transition"
+          >
+            <Download className="h-4 w-4" /> Download resume
+          </a>
+          <Link
+            to="/"
+            hash="contact"
+            className="inline-flex items-center gap-2 rounded-full border border-transparent px-5 py-3 text-sm font-medium text-muted-foreground hover:text-foreground transition"
           >
             Get in touch
-          </a>
+          </Link>
         </motion.div>
 
         <motion.dl
@@ -281,7 +151,7 @@ function Hero() {
             ["400 V", "Peak converter output"],
           ].map(([k, v]) => (
             <div key={v} className="border-t border-border pt-4">
-              <dt className="font-display text-3xl md:text-4xl copper-text">{k}</dt>
+              <dt className="font-display text-3xl md:text-4xl text-foreground">{k}</dt>
               <dd className="mt-1 spec-label">{v}</dd>
             </div>
           ))}
@@ -291,55 +161,103 @@ function Hero() {
   );
 }
 
+/* ---------- About ---------- */
+
 function About() {
   return (
-    <section className="border-t border-border bg-surface/40">
-      <div className="mx-auto max-w-6xl px-6 py-20 md:py-28 grid md:grid-cols-12 gap-10">
+    <section className="border-t border-border bg-surface/60">
+      <div className="mx-auto grid max-w-6xl gap-10 px-6 py-20 md:grid-cols-12 md:py-28">
         <div className="md:col-span-4">
           <p className="spec-label">§ 01 — About</p>
-          <h2 className="font-display text-3xl md:text-4xl mt-3">
+          <h2 className="font-display mt-3 text-3xl md:text-4xl">
             Curiosity first, datasheets second.
           </h2>
         </div>
         <div className="md:col-span-8 space-y-5 text-base md:text-lg text-muted-foreground leading-relaxed">
           <p>
-            I'm a fourth-year EEE student at VIT Chennai. Most of my work starts the same way: a subject
-            gets interesting, a professor mentions a research gap, or a friend and I get curious about a
-            protocol — and it turns into a paper, a patent, or a board on the bench.
+            I'm a fourth-year EEE student at VIT Chennai. Most of my work starts the same way: a
+            subject gets interesting, a professor mentions a research gap, or a friend and I get
+            curious about a protocol — and it turns into a paper, a patent, or a board on the bench.
           </p>
           <p>
-            Along the way I've hand-wound ETD-core inductors, spent a week hunting a rail failure caused
-            by a badly labelled datasheet pin, laid out my first SMD PCB in one all-nighter, and shipped
-            firmware for a wheelchair that a person can steer with a nod.
+            Along the way I've hand-wound ETD-core inductors, spent a week hunting a rail failure
+            caused by a badly labelled datasheet pin, laid out my first SMD PCB in one all-nighter,
+            and shipped firmware for a wheelchair that a person can steer with a nod.
           </p>
-          <p>
-            I like problems where the electrons, the geometry, and the story all have to line up.
-          </p>
+          <p>I like problems where the electrons, the geometry, and the story all have to line up.</p>
         </div>
       </div>
     </section>
   );
 }
 
+/* ---------- Projects ---------- */
+
 function ProjectsSection() {
   return (
     <section id="work" className="relative">
       <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
-        <div className="flex items-end justify-between gap-8 mb-14">
+        <div className="mb-14 flex items-end justify-between gap-8">
           <div>
             <p className="spec-label">§ 02 — Selected work</p>
-            <h2 className="font-display text-3xl md:text-5xl mt-3 max-w-2xl">
+            <h2 className="font-display mt-3 text-3xl md:text-5xl max-w-2xl">
               Five projects. Two patents. One that shouldn't exist yet.
             </h2>
           </div>
-          <span className="hidden md:block font-mono-tech text-xs text-muted-foreground">
+          <span className="hidden font-mono-tech text-xs text-muted-foreground md:block">
             2024 — 2026
           </span>
         </div>
 
-        <div className="space-y-6">
+        <div className="grid gap-6 md:grid-cols-2">
           {PROJECTS.map((p, i) => (
-            <ProjectRow key={p.id} project={p} index={i} />
+            <motion.div
+              key={p.slug}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.5, delay: i * 0.05 }}
+            >
+              <Link
+                to="/projects/$slug"
+                params={{ slug: p.slug }}
+                className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card transition hover:border-border-strong hover:shadow-[var(--shadow-lift)]"
+              >
+                <div className="aspect-[16/10] w-full overflow-hidden border-b border-border bg-surface hairline-grid">
+                  <div className="flex h-full items-center justify-center text-center">
+                    <p className="font-mono-tech text-[10px] uppercase tracking-widest text-muted-foreground px-4">
+                      Photo slot
+                    </p>
+                  </div>
+                </div>
+                <div className="flex flex-1 flex-col p-6 md:p-8">
+                  <div className="flex items-center justify-between">
+                    <span className="spec-label">{p.tag}</span>
+                    <span className="font-mono-tech text-[10px] text-muted-foreground">
+                      {p.year}
+                    </span>
+                  </div>
+                  <h3 className="font-display mt-4 text-2xl md:text-3xl leading-tight">
+                    {p.title}
+                  </h3>
+                  <p className="mt-2 text-sm text-muted-foreground">{p.subtitle}</p>
+                  <div className="mt-4 flex flex-wrap gap-1.5">
+                    {p.status.map((s) => (
+                      <span
+                        key={s}
+                        className="rounded-full border border-border bg-surface px-2 py-0.5 text-[10px] font-medium text-foreground"
+                      >
+                        {s}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="mt-auto flex items-center gap-1 pt-6 text-sm font-medium brand-text">
+                    Read case study
+                    <ArrowUpRight className="h-4 w-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </div>
+                </div>
+              </Link>
+            </motion.div>
           ))}
         </div>
       </div>
@@ -347,136 +265,154 @@ function ProjectsSection() {
   );
 }
 
-function ProjectRow({ project, index }: { project: (typeof PROJECTS)[number]; index: number }) {
-  const Icon = project.icon;
+/* ---------- Publications ---------- */
+
+function PublicationsSection() {
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.6, delay: index * 0.05 }}
-      className="group relative overflow-hidden rounded-2xl border border-border bg-surface/60 hover:border-border-strong transition-all hover:bg-surface"
-      style={{ boxShadow: "var(--shadow-panel)" }}
-    >
-      <div className="grid md:grid-cols-12 gap-6 p-6 md:p-10">
-        {/* Left rail */}
-        <div className="md:col-span-4 flex flex-col justify-between gap-6">
-          <div>
-            <div className="flex items-center gap-3">
-              <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-copper/10 text-copper ring-1 ring-copper/30">
-                <Icon className="h-5 w-5" />
-              </span>
-              <span className="spec-label">{project.tag}</span>
-            </div>
-            <h3 className="font-display text-3xl md:text-4xl mt-6 leading-tight">
-              {project.title}
-            </h3>
-            <p className="mt-2 text-muted-foreground italic">{project.subtitle}</p>
+    <section id="publications" className="border-t border-border bg-surface/60">
+      <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
+        <div className="mb-12 grid gap-6 md:grid-cols-12">
+          <div className="md:col-span-4">
+            <p className="spec-label">§ 03 — Publications & Patents</p>
+            <h2 className="font-display mt-3 text-3xl md:text-4xl">
+              The paper trail, honest and up-to-date.
+            </h2>
           </div>
-          <div className="font-mono-tech text-xs text-muted-foreground flex items-center gap-3">
-            <span className="h-px flex-1 bg-border" />
-            <span>{project.year}</span>
-          </div>
-        </div>
-
-        {/* Right content */}
-        <div className="md:col-span-8 md:border-l md:border-border md:pl-10">
-          <p className="text-base md:text-lg leading-relaxed text-foreground/90">
-            {project.blurb}
+          <p className="md:col-span-8 text-base md:text-lg text-muted-foreground leading-relaxed">
+            Two Indian patents filed on high-gain DC-DC converter topologies, one under-examination
+            patent on the LOTUS concentric-ring bus, one published IEEE paper, and two IEEE drafts
+            written but not yet submitted. Status is labeled honestly on every entry.
           </p>
-
-          <dl className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
-            {project.specs.map(([k, v]) => (
-              <div key={k} className="flex flex-col gap-0.5 border-t border-border pt-2">
-                <dt className="spec-label">{k}</dt>
-                <dd className="text-sm text-foreground/90">{v}</dd>
-              </div>
-            ))}
-          </dl>
-
-          {project.links.length > 0 && (
-            <ul className="mt-6 space-y-2">
-              {project.links.map((l) => (
-                <li key={l.label} className="flex items-baseline gap-3 text-sm">
-                  <span className="text-copper">◆</span>
-                  <span className="font-mono-tech">{l.label}</span>
-                  {l.note && <span className="text-muted-foreground">— {l.note}</span>}
-                </li>
-              ))}
-            </ul>
-          )}
-
-          <p className="mt-6 text-xs text-muted-foreground leading-relaxed">{project.footer}</p>
         </div>
+
+        <ul className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
+          {PUBLICATIONS.map((pub) => {
+            const statusStyle =
+              pub.status === "Published"
+                ? "bg-[color:var(--brand)]/10 brand-text border-[color:var(--brand)]/30"
+                : pub.status === "Filed"
+                  ? "bg-surface-2 text-foreground border-border-strong"
+                  : "bg-surface text-muted-foreground border-border";
+            return (
+              <li key={pub.title}>
+                <div className="grid gap-3 p-5 md:grid-cols-12 md:items-center md:gap-6 md:p-6">
+                  <div className="md:col-span-2">
+                    <span className="font-mono-tech text-[10px] uppercase tracking-widest text-muted-foreground">
+                      {pub.kind}
+                    </span>
+                  </div>
+                  <div className="md:col-span-6">
+                    <p className="font-medium text-foreground">{pub.title}</p>
+                    <p className="mt-1 text-sm text-muted-foreground">{pub.detail}</p>
+                  </div>
+                  <div className="md:col-span-2">
+                    <span
+                      className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-medium ${statusStyle}`}
+                    >
+                      {pub.status === "Published" && <CheckCircle2 className="h-3 w-3" />}
+                      {pub.status}
+                    </span>
+                  </div>
+                  <div className="md:col-span-2 md:text-right">
+                    <p className="font-mono-tech text-xs text-muted-foreground">{pub.venue}</p>
+                    <div className="mt-2 flex gap-3 md:justify-end">
+                      {pub.href && (
+                        <a
+                          href={pub.href}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1 text-xs font-medium brand-text hover:underline"
+                        >
+                          DOI <ArrowUpRight className="h-3 w-3" />
+                        </a>
+                      )}
+                      <Link
+                        to="/projects/$slug"
+                        params={{ slug: pub.projectSlug }}
+                        className="inline-flex items-center gap-1 text-xs font-medium text-foreground hover:text-[color:var(--brand)]"
+                      >
+                        Project <ArrowUpRight className="h-3 w-3" />
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
       </div>
-    </motion.article>
+    </section>
   );
 }
 
+/* ---------- Experience ---------- */
+
 function Experience() {
+  const items = [
+    {
+      role: "Avionics Engineer",
+      org: "Team Ignition — VIT Chennai (Student Rocketry Team)",
+      when: "Oct 2024 – Apr 2026",
+      icon: Rocket,
+      points: [
+        "Payload & avionics sub-teams; owned the payload's combined EPS + FC PCB (8.5 × 8.5 cm) end-to-end.",
+        "Co-designed the avionics EPS with Sai; three PCBs total across the two stacks.",
+        "First team-level move to full-SMD in Altium; authored components, laid out boards, hand-soldered and bench-debugged.",
+      ],
+    },
+    {
+      role: "Intern — Power Systems",
+      org: "Nuclear Desalination Demonstration Plant, BARC · Kalpakkam",
+      when: "May 2025 – Jun 2025",
+      icon: Zap,
+      points: [
+        "Studied substation SLDs, industrial motor load distribution, cable sizing and DC motor protection schemes.",
+        "Designed a single-phase VFD schematic in EasyEDA; studied SPWM modulation and inverter switching.",
+      ],
+    },
+    {
+      role: "Undergraduate Researcher",
+      org: "Power Electronics Lab — under Dr. M. Prabhakar, VIT Chennai",
+      when: "2024 – 2026",
+      icon: Radio,
+      points: [
+        "High-gain DC-DC converter research track — 5 topologies drafted, 2 carried through to patented hardware.",
+        "Owned magnetics design (ETD44 / 54 / 59), PCB layout, and bench validation with differential + current probes.",
+      ],
+    },
+  ];
+
   return (
-    <section id="experience" className="border-t border-border bg-surface/30">
-      <div className="mx-auto max-w-6xl px-6 py-20 md:py-28 grid md:grid-cols-12 gap-10">
+    <section id="experience" className="border-t border-border">
+      <div className="mx-auto grid max-w-6xl gap-10 px-6 py-20 md:grid-cols-12 md:py-28">
         <div className="md:col-span-4">
-          <p className="spec-label">§ 03 — Experience</p>
-          <h2 className="font-display text-3xl md:text-4xl mt-3">Where the ideas got tested.</h2>
+          <p className="spec-label">§ 04 — Experience</p>
+          <h2 className="font-display mt-3 text-3xl md:text-4xl">Where the ideas got tested.</h2>
         </div>
         <div className="md:col-span-8 space-y-8">
-          {[
-            {
-              role: "Avionics Engineer",
-              org: "Team Ignition — VIT Chennai (Student Rocketry Team)",
-              when: "Oct 2024 – Apr 2026",
-              icon: Rocket,
-              points: [
-                "Payload & avionics sub-teams; owned the payload's combined EPS + FC PCB (8.5 × 8.5 cm) end-to-end.",
-                "Co-designed the avionics EPS with Sai; three PCBs total across the two stacks.",
-                "First team-level move to full-SMD in Altium; authored components, laid out boards, hand-soldered and bench-debugged.",
-              ],
-            },
-            {
-              role: "Intern — Power Systems",
-              org: "Nuclear Desalination Demonstration Plant, BARC · Kalpakkam",
-              when: "May 2025 – Jun 2025",
-              icon: Zap,
-              points: [
-                "Studied substation SLDs, industrial motor load distribution, cable sizing and DC motor protection schemes.",
-                "Designed a single-phase VFD schematic in EasyEDA; studied SPWM modulation and inverter switching.",
-              ],
-            },
-            {
-              role: "Undergraduate Researcher",
-              org: "Power Electronics Lab — under Dr. M. Prabhakar, VIT Chennai",
-              when: "2024 – 2026",
-              icon: Radio,
-              points: [
-                "High-gain DC-DC converter research track — 5 topologies drafted, 2 carried through to patented hardware.",
-                "Owned magnetics design (ETD44 / 54 / 59), PCB layout, and bench validation with differential + current probes.",
-              ],
-            },
-          ].map((e) => {
+          {items.map((e) => {
             const I = e.icon;
             return (
               <motion.div
                 key={e.role}
-                initial={{ opacity: 0, x: 20 }}
+                initial={{ opacity: 0, x: 16 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5 }}
-                className="relative pl-8 border-l border-border"
+                className="relative border-l border-border pl-8"
               >
-                <span className="absolute -left-[9px] top-1 inline-flex h-4 w-4 items-center justify-center rounded-full bg-background ring-1 ring-copper">
-                  <I className="h-2.5 w-2.5 text-copper" />
+                <span className="absolute -left-[9px] top-1 inline-flex h-4 w-4 items-center justify-center rounded-full bg-background ring-1 ring-[color:var(--brand)]">
+                  <I className="h-2.5 w-2.5 brand-text" />
                 </span>
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <h3 className="font-display text-xl">{e.role}</h3>
                   <span className="font-mono-tech text-xs text-muted-foreground">{e.when}</span>
                 </div>
-                <p className="text-sm text-copper mt-1">{e.org}</p>
+                <p className="mt-1 text-sm brand-text">{e.org}</p>
                 <ul className="mt-3 space-y-1.5 text-sm text-muted-foreground leading-relaxed">
                   {e.points.map((pt) => (
                     <li key={pt} className="flex gap-2">
-                      <span className="text-copper/70 mt-1.5 shrink-0 h-1 w-1 rounded-full bg-copper/60" />
+                      <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[color:var(--brand)]/60" />
                       <span>{pt}</span>
                     </li>
                   ))}
@@ -490,18 +426,35 @@ function Experience() {
   );
 }
 
+/* ---------- Skills ---------- */
+
+const SKILLS: [string, string][] = [
+  [
+    "Power Electronics",
+    "DC-DC boost & high-gain topologies · volt-second analysis · magnetic design (ETD44/54/59) · 50 kHz switching · high-voltage layout · thermal debugging",
+  ],
+  ["Simulation", "MATLAB / Simulink · PSIM"],
+  [
+    "PCB & Hardware",
+    "Altium Designer · EasyEDA · KiCad · SMD rework · Altium library authoring",
+  ],
+  ["Instruments", "MDO / DSO · differential & current probes · multimeter"],
+  ["Microcontrollers", "STM32 · ESP32 · RP2040 (PWM · ADC · UART · SPI · I²C)"],
+  ["Protocols", "ESP-NOW · NRF24L01 · I²C sensor stacks"],
+];
+
 function SkillsSection() {
   return (
-    <section id="skills" className="border-t border-border">
+    <section id="skills" className="border-t border-border bg-surface/60">
       <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
-        <div className="grid md:grid-cols-12 gap-10">
+        <div className="grid gap-10 md:grid-cols-12">
           <div className="md:col-span-4">
-            <p className="spec-label">§ 04 — Toolbox</p>
-            <h2 className="font-display text-3xl md:text-4xl mt-3">
+            <p className="spec-label">§ 05 — Toolbox</p>
+            <h2 className="font-display mt-3 text-3xl md:text-4xl">
               Instruments, silicon, software.
             </h2>
           </div>
-          <div className="md:col-span-8 grid sm:grid-cols-2 gap-x-8 gap-y-6">
+          <div className="md:col-span-8 grid gap-x-8 gap-y-6 sm:grid-cols-2">
             {SKILLS.map(([k, v]) => (
               <div key={k} className="border-t border-border pt-4">
                 <p className="spec-label">{k}</p>
@@ -515,65 +468,244 @@ function SkillsSection() {
   );
 }
 
-function Contact() {
-  const items = [
-    {
-      icon: Mail,
-      label: "dharanibarathicd@gmail.com",
-      href: "mailto:dharanibarathicd@gmail.com",
-    },
-    { icon: Phone, label: "+91 88259 27230", href: "tel:+918825927230" },
-    {
-      icon: Linkedin,
-      label: "linkedin.com/in/dharanibarathicd",
-      href: "https://linkedin.com/in/dharanibarathicd",
-    },
-    { icon: Github, label: "github.com/iamboffin", href: "https://github.com/iamboffin" },
-  ];
-  return (
-    <section id="contact" className="border-t border-border bg-surface/40 relative overflow-hidden">
-      <div className="absolute inset-0 grid-bg opacity-30 pointer-events-none" />
-      <div className="relative mx-auto max-w-6xl px-6 py-24 md:py-32 text-center">
-        <p className="spec-label">§ 05 — Contact</p>
-        <h2 className="font-display text-4xl md:text-6xl mt-4 leading-tight">
-          Building something that needs <span className="copper-text italic">watts, wires, or wonder?</span>
-        </h2>
-        <p className="mt-6 max-w-xl mx-auto text-muted-foreground">
-          I'm open to internships and research collaborations in power electronics, embedded systems, and aerospace avionics.
-        </p>
+/* ---------- Contact ---------- */
 
-        <div className="mt-10 grid sm:grid-cols-2 gap-3 max-w-2xl mx-auto">
-          {items.map((it) => {
-            const I = it.icon;
-            return (
-              <a
-                key={it.label}
-                href={it.href}
-                target={it.href.startsWith("http") ? "_blank" : undefined}
-                rel="noreferrer"
-                className="group flex items-center gap-3 rounded-xl border border-border bg-background px-4 py-3 text-left hover:border-copper transition"
-              >
-                <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-copper/10 text-copper ring-1 ring-copper/30">
-                  <I className="h-4 w-4" />
-                </span>
-                <span className="font-mono-tech text-sm truncate">{it.label}</span>
-                <ArrowUpRight className="ml-auto h-4 w-4 text-muted-foreground group-hover:text-copper transition" />
-              </a>
-            );
-          })}
+function Contact() {
+  return (
+    <section id="contact" className="relative border-t border-border">
+      <div className="mx-auto grid max-w-6xl gap-12 px-6 py-20 md:grid-cols-12 md:py-28">
+        <div className="md:col-span-5">
+          <p className="spec-label">§ 06 — Contact</p>
+          <h2 className="font-display mt-3 text-4xl md:text-5xl leading-tight">
+            Building something that needs{" "}
+            <span className="brand-text">watts, wires, or wonder?</span>
+          </h2>
+          <p className="mt-5 text-muted-foreground">
+            Open to internships and research collaborations in power electronics, embedded systems,
+            and aerospace avionics.
+          </p>
+
+          <div className="mt-8 flex flex-wrap gap-2">
+            <a
+              href={RESUME_URL}
+              download
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:opacity-90 transition"
+            >
+              <Download className="h-4 w-4" /> Download resume (PDF)
+            </a>
+          </div>
+
+          <div className="mt-8 space-y-3">
+            <ContactRow
+              icon={<Mail className="h-4 w-4" />}
+              label="dharanibarathicd@gmail.com"
+              href="mailto:dharanibarathicd@gmail.com"
+            />
+            <ContactRow
+              icon={<Phone className="h-4 w-4" />}
+              label="+91 88259 27230"
+              href="tel:+918825927230"
+            />
+            <ContactRow
+              icon={<Linkedin className="h-4 w-4" />}
+              label="linkedin.com/in/dharanibarathicd"
+              href="https://linkedin.com/in/dharanibarathicd"
+            />
+            <ContactRow
+              icon={<Github className="h-4 w-4" />}
+              label="github.com/iamboffin"
+              href="https://github.com/iamboffin"
+            />
+          </div>
+        </div>
+
+        <div className="md:col-span-7">
+          <ContactForm />
         </div>
       </div>
     </section>
   );
 }
 
-function Footer() {
+function ContactRow({
+  icon,
+  label,
+  href,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  href: string;
+}) {
+  const external = href.startsWith("http");
   return (
-    <footer className="border-t border-border">
-      <div className="mx-auto max-w-6xl px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-3 font-mono-tech text-xs text-muted-foreground">
-        <span>© {new Date().getFullYear()} Dharani Barathi C D.</span>
-        <span className="uppercase tracking-widest">Chennai · India — designed & built by DBCD</span>
+    <a
+      href={href}
+      target={external ? "_blank" : undefined}
+      rel={external ? "noreferrer" : undefined}
+      className="group flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 transition hover:border-border-strong hover:bg-surface"
+    >
+      <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-surface text-foreground">
+        {icon}
+      </span>
+      <span className="font-mono-tech text-sm truncate">{label}</span>
+      <ArrowUpRight className="ml-auto h-4 w-4 text-muted-foreground group-hover:text-foreground transition" />
+    </a>
+  );
+}
+
+function ContactForm() {
+  const [state, setState] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [error, setError] = useState<string | null>(null);
+  const [values, setValues] = useState({ name: "", email: "", message: "" });
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setState("submitting");
+    try {
+      const res = await fetch("/api/public/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      });
+      const data = (await res.json().catch(() => ({}))) as { error?: string };
+      if (!res.ok) throw new Error(data.error ?? "Something went wrong");
+      setState("success");
+      setValues({ name: "", email: "", message: "" });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong");
+      setState("error");
+    }
+  }
+
+  if (state === "success") {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex h-full min-h-[420px] flex-col items-center justify-center rounded-2xl border border-border bg-card p-10 text-center"
+      >
+        <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-[color:var(--brand)]/10">
+          <CheckCircle2 className="h-7 w-7 brand-text" />
+        </span>
+        <h3 className="font-display mt-6 text-2xl md:text-3xl">Message received.</h3>
+        <p className="mt-3 max-w-sm text-muted-foreground">
+          Thanks for reaching out — I've got your note and will reply to you at the email you provided
+          within a few days.
+        </p>
+        <button
+          type="button"
+          onClick={() => setState("idle")}
+          className="mt-6 text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground"
+        >
+          Send another message
+        </button>
+      </motion.div>
+    );
+  }
+
+  return (
+    <form
+      onSubmit={onSubmit}
+      className="flex h-full flex-col gap-5 rounded-2xl border border-border bg-card p-6 md:p-8"
+    >
+      <div>
+        <p className="spec-label">Send a message</p>
+        <h3 className="font-display mt-2 text-2xl">Let's talk.</h3>
       </div>
-    </footer>
+
+      <Field
+        label="Name"
+        id="name"
+        value={values.name}
+        onChange={(v) => setValues((s) => ({ ...s, name: v }))}
+        required
+        maxLength={200}
+      />
+      <Field
+        label="Email"
+        id="email"
+        type="email"
+        value={values.email}
+        onChange={(v) => setValues((s) => ({ ...s, email: v }))}
+        required
+        maxLength={320}
+      />
+      <div className="flex flex-col gap-2">
+        <label htmlFor="message" className="spec-label">
+          Message
+        </label>
+        <textarea
+          id="message"
+          required
+          maxLength={5000}
+          rows={6}
+          value={values.message}
+          onChange={(e) => setValues((s) => ({ ...s, message: e.target.value }))}
+          className="rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-[color:var(--brand)] focus:outline-none focus:ring-2 focus:ring-[color:var(--brand)]/20 transition"
+          placeholder="Tell me about the role, project, or collaboration…"
+        />
+      </div>
+
+      {error && (
+        <p className="text-sm text-[color:var(--destructive)]">{error}</p>
+      )}
+
+      <button
+        type="submit"
+        disabled={state === "submitting"}
+        className="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-60"
+      >
+        {state === "submitting" ? (
+          <>
+            <Loader2 className="h-4 w-4 animate-spin" /> Sending
+          </>
+        ) : (
+          <>
+            Send message <ArrowRight className="h-4 w-4" />
+          </>
+        )}
+      </button>
+
+      <p className="text-xs text-muted-foreground">
+        Your message is delivered to my inbox. I typically reply within a few days.
+      </p>
+    </form>
+  );
+}
+
+function Field({
+  label,
+  id,
+  type = "text",
+  value,
+  onChange,
+  required,
+  maxLength,
+}: {
+  label: string;
+  id: string;
+  type?: string;
+  value: string;
+  onChange: (v: string) => void;
+  required?: boolean;
+  maxLength?: number;
+}) {
+  return (
+    <div className="flex flex-col gap-2">
+      <label htmlFor={id} className="spec-label">
+        {label}
+      </label>
+      <input
+        id={id}
+        name={id}
+        type={type}
+        required={required}
+        maxLength={maxLength}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-[color:var(--brand)] focus:outline-none focus:ring-2 focus:ring-[color:var(--brand)]/20 transition"
+      />
+    </div>
   );
 }
