@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowUpRight, CheckCircle2 } from "lucide-react";
-import { PROJECTS } from "@/lib/projects";
+import { PROJECTS, type Project } from "@/lib/projects";
 import { SiteHeader, SiteFooter } from "@/components/site-chrome";
 
 export const Route = createFileRoute("/projects/$slug")({
@@ -47,7 +47,7 @@ export const Route = createFileRoute("/projects/$slug")({
 });
 
 function ProjectDetail() {
-  const { project } = Route.useLoaderData();
+  const { project } = Route.useLoaderData() as { project: Project };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
